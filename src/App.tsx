@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { MessageSquare, PlusCircle, Activity, Globe, Landmark } from "lucide-react";
+import { Landmark, Globe, Activity, MessageSquare, PlusCircle, Moon, Sun } from "lucide-react";
 import CivicChat from "./components/CivicChat";
 import ComplaintFiler from "./components/ComplaintFiler";
 import CivicDashboard from "./components/CivicDashboard";
@@ -14,8 +14,21 @@ import { translations } from "./translations";
 export default function App() {
   const [tab, setTab] = useState<"chat" | "file" | "dashboard">("chat");
   const [currentLanguage, setCurrentLanguage] = useState<string>("en");
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    return localStorage.getItem("theme") === "dark";
+  });
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [quickSearchQuery, setQuickSearchQuery] = useState<string>("");
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [isDarkMode]);
 
   // Fetch all complaints from server
   const fetchComplaints = async () => {
@@ -83,13 +96,13 @@ export default function App() {
     { code: "bn", name: "বাংলা (Bengali)" }
   ];
 
-  const t = translations[currentLanguage] || translations.en;
+  const t = translations[currentLanguage as keyof typeof translations] || translations.en;
 
   return (
-    <div className="min-h-screen bg-bento-bg text-bento-text flex flex-col font-sans antialiased selection:bg-bento-orange selection:text-white pb-[76px] md:pb-0">
+    <div className="min-h-screen bg-bento-bg text-bento-text transition-colors duration-200 flex flex-col font-sans antialiased selection:bg-bento-orange selection:text-white pb-[76px] md:pb-0">
       
       {/* 1. Header Banner with Elegant Branding & Language Toggle */}
-      <header className="sticky top-0 z-40 bg-white border-b-4 border-bento-orange px-3 sm:px-6 md:px-8 py-3 sm:py-4 flex items-center justify-between shadow-sm gap-2">
+      <header className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b-4 border-bento-orange px-3 sm:px-6 md:px-8 py-3 sm:py-4 flex items-center justify-between shadow-sm gap-2 transition-colors duration-200">
         <div className="flex items-center space-x-2.5 sm:space-x-3.5 min-w-0">
           {/* Logo emblem */}
           <div className="h-10 w-10 sm:h-11 sm:w-11 bg-bento-blue text-white rounded-xl flex items-center justify-center font-extrabold text-xl border-2 border-gray-800 shadow-bento-sm shrink-0">
@@ -106,61 +119,86 @@ export default function App() {
           </div>
         </div>
 
-        {/* Language selector dropdown */}
-        <div className="flex items-center space-x-1.5 sm:space-x-2 bg-white border-2 border-gray-800 rounded-xl px-2 sm:px-2.5 py-1.5 shadow-bento-sm hover:translate-y-[-1px] transition-transform shrink-0">
-          <Globe className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-bento-blue" />
-          <select
-            value={currentLanguage}
-            onChange={(e) => setCurrentLanguage(e.target.value)}
-            className="bg-transparent text-[11px] sm:text-xs font-bold text-bento-text outline-none cursor-pointer max-w-[80px] sm:max-w-none"
-            id="global-language-selector"
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-2 mr-auto ml-6">
+          <button onClick={() => setTab("chat")} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab === "chat" ? "bg-gray-100 dark:bg-gray-800 text-bento-blue border-2 border-gray-800 dark:border-gray-600" : "text-gray-500 dark:text-gray-400 hover:text-bento-text"}`}>
+            {t.navChat}
+          </button>
+          <button onClick={() => setTab("file")} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab === "file" ? "bg-gray-100 dark:bg-gray-800 text-bento-orange border-2 border-gray-800 dark:border-gray-600" : "text-gray-500 dark:text-gray-400 hover:text-bento-text"}`}>
+            {t.navReport}
+          </button>
+          <button onClick={() => setTab("dashboard")} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab === "dashboard" ? "bg-gray-100 dark:bg-gray-800 text-bento-green border-2 border-gray-800 dark:border-gray-600" : "text-gray-500 dark:text-gray-400 hover:text-bento-text"}`}>
+            {t.navDashboard}
+          </button>
+        </div>
+
+        <div className="flex items-center space-x-2 shrink-0">
+          {/* Dark Mode Toggle */}
+          <button 
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className="flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 bg-white dark:bg-gray-800 border-2 border-gray-800 dark:border-gray-600 rounded-xl shadow-bento-sm hover:translate-y-[-1px] transition-transform text-bento-text"
           >
-            {languageOptions.map((lang) => (
-              <option key={lang.code} value={lang.code} className="text-slate-800 font-bold">
-                {lang.name}
-              </option>
-            ))}
-          </select>
+            {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
+
+          {/* Language selector dropdown */}
+          <div className="flex items-center space-x-1.5 sm:space-x-2 bg-white dark:bg-gray-800 border-2 border-gray-800 dark:border-gray-600 rounded-xl px-2 sm:px-2.5 py-1.5 shadow-bento-sm hover:translate-y-[-1px] transition-transform">
+            <Globe className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-bento-blue dark:text-blue-400" />
+            <select
+              value={currentLanguage}
+              onChange={(e) => setCurrentLanguage(e.target.value)}
+              className="bg-transparent text-[11px] sm:text-xs font-bold text-bento-text outline-none cursor-pointer max-w-[80px] sm:max-w-none"
+              id="global-language-selector"
+            >
+              {languageOptions.map((lang) => (
+                <option key={lang.code} value={lang.code} className="text-slate-800 dark:text-slate-200 bg-white dark:bg-gray-800 font-bold">
+                  {lang.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </header>
 
-      {/* 2. Main Content viewport */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-3 sm:px-4 py-3 md:py-8">
-        {tab === "chat" && (
-          <CivicChat 
-            currentLanguage={currentLanguage} 
-            setTab={setTab}
-            setQuickSearch={setQuickSearchQuery}
-            onAutoFileRequest={handleAutoFileRequest}
-          />
-        )}
-        
-        {tab === "file" && (
-          <ComplaintFiler 
-            currentLanguage={currentLanguage}
-            onComplaintSubmitted={fetchComplaints} 
-          />
-        )}
+      {/* 2. Main Body Workspace */}
+      <main className="flex-1 max-w-[1400px] w-full mx-auto px-3 sm:px-4 py-3 md:py-8">
+        <div className="relative">
+          {tab === "chat" && (
+            <CivicChat 
+              currentLanguage={currentLanguage} 
+              setTab={setTab}
+              setQuickSearch={setQuickSearchQuery}
+              onAutoFileRequest={handleAutoFileRequest}
+            />
+          )}
+          
+          {tab === "file" && (
+            <ComplaintFiler 
+              currentLanguage={currentLanguage}
+              onComplaintSubmitted={fetchComplaints} 
+            />
+          )}
 
-        {tab === "dashboard" && (
-          <CivicDashboard 
-            currentLanguage={currentLanguage}
-            complaints={complaints}
-            onUpvote={handleUpvote}
-            onStatusChange={handleStatusChange}
-          />
-        )}
+          {tab === "dashboard" && (
+            <CivicDashboard 
+              currentLanguage={currentLanguage}
+              complaints={complaints}
+              onUpvote={handleUpvote}
+              onStatusChange={handleStatusChange}
+            />
+          )}
+        </div>
       </main>
 
       {/* 3. Bottom Navigation Bar for Mobile-first responsive feel */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t-4 border-gray-800 px-2 py-1.5 flex items-center justify-around md:hidden" style={{ paddingBottom: 'max(0.375rem, env(safe-area-inset-bottom))' }}>
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t-4 border-gray-800 dark:border-gray-700 px-2 py-1.5 flex items-center justify-around md:hidden transition-colors duration-200" style={{ paddingBottom: 'max(0.375rem, env(safe-area-inset-bottom))' }}>
         
         <button
           onClick={() => setTab("chat")}
           className={`flex flex-col items-center justify-center h-14 flex-1 max-w-[100px] rounded-xl transition-all ${
             tab === "chat" 
-              ? "text-bento-blue font-black bg-gray-100 border-2 border-gray-800" 
-              : "text-gray-400 hover:text-bento-text font-semibold"
+              ? "text-bento-blue dark:text-blue-400 font-black bg-gray-100 dark:bg-gray-800 border-2 border-gray-800 dark:border-gray-600" 
+              : "text-gray-400 dark:text-gray-500 hover:text-bento-text"
           }`}
           id="nav-chat-tab"
         >
@@ -172,8 +210,8 @@ export default function App() {
           onClick={() => setTab("file")}
           className={`flex flex-col items-center justify-center h-14 flex-1 max-w-[100px] rounded-xl transition-all ${
             tab === "file" 
-              ? "text-bento-orange font-black bg-gray-100 border-2 border-gray-800" 
-              : "text-gray-400 hover:text-bento-text font-semibold"
+              ? "text-bento-orange font-black bg-gray-100 dark:bg-gray-800 border-2 border-gray-800 dark:border-gray-600" 
+              : "text-gray-400 dark:text-gray-500 hover:text-bento-text"
           }`}
           id="nav-file-tab"
         >
@@ -185,8 +223,8 @@ export default function App() {
           onClick={() => setTab("dashboard")}
           className={`flex flex-col items-center justify-center h-14 flex-1 max-w-[100px] rounded-xl transition-all ${
             tab === "dashboard" 
-              ? "text-bento-green font-black bg-gray-100 border-2 border-gray-800" 
-              : "text-gray-400 hover:text-bento-text font-semibold"
+              ? "text-bento-green dark:text-green-500 font-black bg-gray-100 dark:bg-gray-800 border-2 border-gray-800 dark:border-gray-600" 
+              : "text-gray-400 dark:text-gray-500 hover:text-bento-text"
           }`}
           id="nav-dashboard-tab"
         >
@@ -194,45 +232,6 @@ export default function App() {
           <span className="text-[10px] tracking-tight">{t.navDashboard}</span>
         </button>
       </nav>
-
-      {/* Desktop Navigation Helper */}
-      <div className="hidden md:flex justify-center items-center py-2.5 px-4 space-x-2.5 sticky bottom-6 z-40 bg-white max-w-md mx-auto rounded-2xl border-4 border-gray-800 shadow-bento">
-        <button
-          onClick={() => setTab("chat")}
-          className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 cursor-pointer border-2 ${
-            tab === "chat" 
-              ? "bg-bento-blue text-white border-gray-800 shadow-bento-sm" 
-              : "text-gray-600 hover:bg-gray-100 border-transparent"
-          }`}
-        >
-          <MessageSquare className="h-3.5 w-3.5" />
-          <span>{t.navChat}</span>
-        </button>
-
-        <button
-          onClick={() => setTab("file")}
-          className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 cursor-pointer border-2 ${
-            tab === "file" 
-              ? "bg-bento-orange text-white border-gray-800 shadow-bento-sm" 
-              : "text-gray-600 hover:bg-gray-100 border-transparent"
-          }`}
-        >
-          <PlusCircle className="h-3.5 w-3.5" />
-          <span>{t.navReport}</span>
-        </button>
-
-        <button
-          onClick={() => setTab("dashboard")}
-          className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center space-x-1.5 cursor-pointer border-2 ${
-            tab === "dashboard" 
-              ? "bg-bento-green text-white border-gray-800 shadow-bento-sm" 
-              : "text-gray-600 hover:bg-gray-100 border-transparent"
-          }`}
-        >
-          <Activity className="h-3.5 w-3.5" />
-          <span>{t.navDashboard}</span>
-        </button>
-      </div>
 
     </div>
   );

@@ -121,15 +121,20 @@ Respond STRICTLY with a JSON object.`;
           .join("\n");
         const fullPrompt = `${formattedHistory}\n\nCitizen: ${message}`;
 
-        const chatResponse = await ai.models.generateContent({
+        const chatPromise = ai.models.generateContent({
           model: "gemini-2.5-flash",
           contents: fullPrompt,
           config: { systemInstruction: agentSystemPrompt, temperature: 0.7 },
         });
 
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error("Gemini API timeout (8s)")), 8000)
+        );
+
+        const chatResponse = await Promise.race([chatPromise, timeoutPromise]) as any;
         botReplyText = chatResponse.text || "I am here to help you. Could you please rephrase?";
       } catch (err) {
-        console.error("Specialist agent call failed:", err);
+        console.error("Specialist agent call failed or timed out:", err);
         botReplyText = getMockResponse(routedAgent, message, detectedLanguage, complaints);
       }
     } else {
@@ -142,7 +147,13 @@ Respond STRICTLY with a JSON object.`;
       language: detectedLanguage,
     });
   } catch (err: any) {
-    return res.status(500).json({ error: err.message || "Failed to process chat" });
+    console.error("Critical Chat Route Error:", err);
+    // Even on critical error, return a simulated response instead of crashing 500
+    return res.status(200).json({
+      text: "I am experiencing network difficulties right now. Please try again in a few moments.",
+      routedAgent: "general",
+      language: "en"
+    });
   }
 }
 

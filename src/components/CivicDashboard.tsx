@@ -174,42 +174,42 @@ export default function CivicDashboard({ currentLanguage, complaints, onUpvote, 
       
       {/* 1. Statistics Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5">
-        <div className="bg-white border-3 sm:border-4 border-gray-800 p-3 sm:p-4 md:p-5 rounded-2xl sm:rounded-3xl shadow-bento">
-          <div className="flex items-center justify-between text-gray-500 mb-1">
+        <div className="bg-white dark:bg-gray-800 border-3 sm:border-4 border-gray-800 dark:border-gray-700 p-3 sm:p-4 md:p-5 rounded-2xl sm:rounded-3xl shadow-bento transition-colors duration-200">
+          <div className="flex items-center justify-between text-gray-500 dark:text-gray-400 mb-1">
             <span className="text-[10px] font-black uppercase tracking-wider">{t.totalReports || "Total Reports"}</span>
-            <Activity className="h-4.5 w-4.5 text-gray-700" />
+            <Activity className="h-4.5 w-4.5 text-gray-700 dark:text-gray-300" />
           </div>
-          <p className="text-2xl sm:text-3xl font-black text-gray-900 leading-tight">{totalReports}</p>
-          <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider mt-1">{t.municipalWardArea || "Municipal Ward Area"}</span>
+          <p className="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white leading-tight">{totalReports}</p>
+          <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 block uppercase tracking-wider mt-1">{t.municipalWardArea || "Municipal Ward Area"}</span>
         </div>
 
-        <div className="bg-emerald-50 border-3 sm:border-4 border-gray-800 p-3 sm:p-4 md:p-5 rounded-2xl sm:rounded-3xl shadow-bento">
-          <div className="flex items-center justify-between text-gray-500 mb-1">
+        <div className="bg-emerald-50 dark:bg-emerald-900/30 border-3 sm:border-4 border-gray-800 dark:border-gray-700 p-3 sm:p-4 md:p-5 rounded-2xl sm:rounded-3xl shadow-bento transition-colors duration-200">
+          <div className="flex items-center justify-between text-gray-500 dark:text-gray-400 mb-1">
             <span className="text-[10px] font-black uppercase tracking-wider">{t.resolved || "Resolved"}</span>
-            <CheckCircle className="h-4.5 w-4.5 text-bento-green" />
+            <CheckCircle className="h-4.5 w-4.5 text-bento-green dark:text-green-400" />
           </div>
-          <p className="text-2xl sm:text-3xl font-black text-bento-green leading-tight">{resolvedCount}</p>
-          <span className="text-[10px] font-black text-bento-green/80 block uppercase tracking-wider mt-1">
+          <p className="text-2xl sm:text-3xl font-black text-bento-green dark:text-green-400 leading-tight">{resolvedCount}</p>
+          <span className="text-[10px] font-black text-bento-green/80 dark:text-green-500 block uppercase tracking-wider mt-1">
             {currentLanguage === "hi" ? `${t.resolutionRate || "समाधान दर"}: ${resolutionRate}%` : `${resolutionRate}% ${t.resolutionRate || "Resolution Rate"}`}
           </span>
         </div>
 
-        <div className="bg-amber-50 border-3 sm:border-4 border-gray-800 p-3 sm:p-4 md:p-5 rounded-2xl sm:rounded-3xl shadow-bento">
-          <div className="flex items-center justify-between text-gray-500 mb-1">
+        <div className="bg-amber-50 dark:bg-amber-900/20 border-3 sm:border-4 border-gray-800 dark:border-gray-700 p-3 sm:p-4 md:p-5 rounded-2xl sm:rounded-3xl shadow-bento transition-colors duration-200">
+          <div className="flex items-center justify-between text-gray-500 dark:text-gray-400 mb-1">
             <span className="text-[10px] font-black uppercase tracking-wider">{t.inProgress || "In Progress"}</span>
-            <AlertCircle className="h-4.5 w-4.5 text-amber-600" />
+            <AlertCircle className="h-4.5 w-4.5 text-amber-600 dark:text-amber-500" />
           </div>
-          <p className="text-2xl sm:text-3xl font-black text-amber-600 leading-tight">{inProgressCount}</p>
-          <span className="text-[10px] font-bold text-amber-600/80 block uppercase tracking-wider mt-1">{t.assignedWardOfficers || "Assigned Ward Officers"}</span>
+          <p className="text-2xl sm:text-3xl font-black text-amber-600 dark:text-amber-500 leading-tight">{inProgressCount}</p>
+          <span className="text-[10px] font-bold text-amber-600/80 dark:text-amber-600/70 block uppercase tracking-wider mt-1">{t.assignedWardOfficers || "Assigned Ward Officers"}</span>
         </div>
 
-        <div className="bg-rose-50 border-3 sm:border-4 border-gray-800 p-3 sm:p-4 md:p-5 rounded-2xl sm:rounded-3xl shadow-bento">
-          <div className="flex items-center justify-between text-gray-500 mb-1">
+        <div className="bg-rose-50 dark:bg-rose-900/20 border-3 sm:border-4 border-gray-800 dark:border-gray-700 p-3 sm:p-4 md:p-5 rounded-2xl sm:rounded-3xl shadow-bento transition-colors duration-200">
+          <div className="flex items-center justify-between text-gray-500 dark:text-gray-400 mb-1">
             <span className="text-[10px] font-black uppercase tracking-wider">{t.openFiles || "Open Files"}</span>
-            <ShieldAlert className="h-4.5 w-4.5 text-rose-600" />
+            <ShieldAlert className="h-4.5 w-4.5 text-rose-600 dark:text-rose-500" />
           </div>
-          <p className="text-2xl sm:text-3xl font-black text-rose-600 leading-tight">{openCount}</p>
-          <span className="text-[10px] font-bold text-rose-500 block uppercase tracking-wider mt-1">{t.awaitingAudit || "Awaiting AI/Officer audit"}</span>
+          <p className="text-2xl sm:text-3xl font-black text-rose-600 dark:text-rose-500 leading-tight">{openCount}</p>
+          <span className="text-[10px] font-bold text-rose-500 dark:text-rose-500/70 block uppercase tracking-wider mt-1">{t.awaitingAudit || "Awaiting AI/Officer audit"}</span>
         </div>
       </div>
 
@@ -220,8 +220,8 @@ export default function CivicDashboard({ currentLanguage, complaints, onUpvote, 
         <div className="lg:col-span-8 space-y-4">
           
           {/* Category Quick Filter */}
-          <div className="bg-white border-3 sm:border-4 border-gray-800 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 overflow-x-auto scrollbar-none scroll-fade-right flex items-center space-x-2 shadow-bento-sm">
-            <div className="text-xs font-black text-gray-400 px-2 flex items-center space-x-1.5 uppercase tracking-widest shrink-0">
+          <div className="bg-white dark:bg-gray-800 border-3 sm:border-4 border-gray-800 dark:border-gray-700 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 overflow-x-auto scrollbar-none scroll-fade-right flex items-center space-x-2 shadow-bento-sm transition-colors duration-200">
+            <div className="text-xs font-black text-gray-400 dark:text-gray-500 px-2 flex items-center space-x-1.5 uppercase tracking-widest shrink-0">
               <Filter className="h-4 w-4" />
               <span className="hidden sm:inline">{t.filterLabel || "FILTER:"}</span>
             </div>
@@ -232,7 +232,7 @@ export default function CivicDashboard({ currentLanguage, complaints, onUpvote, 
                 className={`py-1.5 px-3.5 rounded-xl text-xs font-black transition-all whitespace-nowrap cursor-pointer border-2 shadow-bento-sm ${
                   filterCategory === cat.value
                     ? "bg-bento-orange text-white border-gray-800"
-                    : "bg-gray-50 hover:bg-gray-100 text-bento-text border-gray-800"
+                    : "bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 text-bento-text dark:text-gray-300 border-gray-800 dark:border-gray-700"
                 }`}
               >
                 <span className="mr-1">{cat.emoji}</span>
@@ -242,13 +242,13 @@ export default function CivicDashboard({ currentLanguage, complaints, onUpvote, 
           </div>
 
           {/* Leaflet map Container */}
-          <div className="bg-white border-3 sm:border-4 border-gray-800 rounded-2xl sm:rounded-3xl overflow-hidden shadow-bento relative">
+          <div className="bg-white dark:bg-gray-800 border-3 sm:border-4 border-gray-800 dark:border-gray-700 rounded-2xl sm:rounded-3xl overflow-hidden shadow-bento relative transition-colors duration-200">
             <div 
               ref={mapContainerRef} 
               className="h-[280px] sm:h-[340px] md:h-[400px] w-full z-10" 
               id="dashboard-leaflet-map"
             />
-            <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 z-[1000] bg-white/95 backdrop-blur-sm border-2 border-gray-800 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-[11px] font-black text-bento-text flex items-center space-x-2 sm:space-x-3 shadow-bento-sm">
+            <div className="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 z-[1000] bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-2 border-gray-800 dark:border-gray-700 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-[11px] font-black text-bento-text dark:text-gray-200 flex items-center space-x-2 sm:space-x-3 shadow-bento-sm">
               <span className="flex items-center space-x-1.5">
                 <span className="w-2.5 h-2.5 bg-rose-500 rounded-full inline-block ring-2 ring-rose-200"></span>
                 <span>{currentLanguage === "hi" ? "लंबित" : "Open"}</span>
@@ -266,13 +266,13 @@ export default function CivicDashboard({ currentLanguage, complaints, onUpvote, 
         </div>
 
         {/* Right Side: Active Complaint Inspector and Lists */}
-        <div className="lg:col-span-4 flex flex-col h-[350px] sm:h-[400px] lg:h-[465px] bg-white border-3 sm:border-4 border-gray-800 rounded-2xl sm:rounded-3xl overflow-hidden shadow-bento">
+        <div className="lg:col-span-4 flex flex-col h-[350px] sm:h-[400px] lg:h-[465px] bg-white dark:bg-gray-900 border-3 sm:border-4 border-gray-800 dark:border-gray-700 rounded-2xl sm:rounded-3xl overflow-hidden shadow-bento transition-colors duration-200">
           
           {/* Selected Complaint Detail Panel */}
           {selectedComplaint ? (
-            <div className="p-4.5 border-b-4 border-gray-800 bg-gray-50 space-y-3 shrink-0">
+            <div className="p-4.5 border-b-4 border-gray-800 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 space-y-3 shrink-0">
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono bg-white px-2 py-0.5 rounded border-2 border-gray-800 font-black text-bento-text shadow-bento-sm">
+                <span className="text-[10px] font-mono bg-white dark:bg-gray-700 px-2 py-0.5 rounded border-2 border-gray-800 dark:border-gray-600 font-black text-bento-text dark:text-gray-200 shadow-bento-sm">
                   {selectedComplaint.id}
                 </span>
                 <span className={`px-2.5 py-0.5 rounded border-2 border-gray-800 text-[9px] font-black uppercase tracking-wider text-white shadow-bento-sm ${
@@ -291,7 +291,7 @@ export default function CivicDashboard({ currentLanguage, complaints, onUpvote, 
               </div>
 
               {selectedComplaint.photoUrl && (
-                <div className="h-28 w-full rounded-2xl overflow-hidden border-2 border-gray-800 bg-slate-100 relative shadow-bento-sm">
+                <div className="h-28 w-full rounded-2xl overflow-hidden border-2 border-gray-800 dark:border-gray-700 bg-slate-100 relative shadow-bento-sm">
                   <img 
                     src={selectedComplaint.photoUrl} 
                     alt="Civic Issue Proof" 
@@ -302,7 +302,7 @@ export default function CivicDashboard({ currentLanguage, complaints, onUpvote, 
 
               <div>
                 <span className="text-[10px] font-black uppercase tracking-wider text-gray-400 block">{t.verifiedProblemDetails || "Verified Problem Details"}</span>
-                <p className="text-xs text-bento-text font-semibold mt-1 line-clamp-3 leading-relaxed">{selectedComplaint.description}</p>
+                <p className="text-xs text-bento-text dark:text-gray-200 font-semibold mt-1 line-clamp-3 leading-relaxed">{selectedComplaint.description}</p>
               </div>
 
               {/* Interaction Row */}
@@ -319,7 +319,7 @@ export default function CivicDashboard({ currentLanguage, complaints, onUpvote, 
                 <select
                   value={selectedComplaint.status}
                   onChange={(e) => onStatusChange(selectedComplaint.id, e.target.value)}
-                  className="px-2 py-2 bg-white border-2 border-gray-800 rounded-xl text-xs font-bold text-bento-text cursor-pointer focus:outline-none shadow-bento-sm flex-1"
+                  className="px-2 py-2 bg-white dark:bg-gray-700 border-2 border-gray-800 dark:border-gray-600 rounded-xl text-xs font-bold text-bento-text dark:text-gray-200 cursor-pointer focus:outline-none shadow-bento-sm flex-1"
                   title="Simulate Municipal Response"
                 >
                   <option value="open">{t.simulateOpen || "Simulate Open"}</option>
@@ -329,17 +329,17 @@ export default function CivicDashboard({ currentLanguage, complaints, onUpvote, 
               </div>
             </div>
           ) : (
-            <div className="p-6 text-center border-b-4 border-gray-800 bg-gray-50 flex flex-col items-center justify-center shrink-0 h-44">
+            <div className="p-6 text-center border-b-4 border-gray-800 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 flex flex-col items-center justify-center shrink-0 h-44">
               <Info className="h-5 w-5 text-gray-400 mb-2" />
-              <p className="text-xs font-black text-bento-text uppercase tracking-wider">{t.selectMapPin || "Select map pin or card"}</p>
-              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-1 max-w-[200px]">{t.exploreActiveCivic || "Explore active civic files and upvote to elevate priority"}</p>
+              <p className="text-xs font-black text-bento-text dark:text-gray-300 uppercase tracking-wider">{t.selectMapPin || "Select map pin or card"}</p>
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mt-1 max-w-[200px]">{t.exploreActiveCivic || "Explore active civic files and upvote to elevate priority"}</p>
             </div>
           )}
 
           {/* List of Active filtered complaints */}
-          <div className="flex-1 overflow-y-auto divide-y divide-gray-200 bg-white">
+          <div className="flex-1 overflow-y-auto divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
             {filteredComplaints.length === 0 ? (
-              <div className="py-12 text-center text-gray-400 text-xs font-bold uppercase tracking-wider">
+              <div className="py-12 text-center text-gray-400 dark:text-gray-600 text-xs font-bold uppercase tracking-wider">
                 {currentLanguage === "hi" ? "इस श्रेणी में कोई शिकायत नहीं है" : "No reports in this category"}
               </div>
             ) : (
@@ -347,8 +347,8 @@ export default function CivicDashboard({ currentLanguage, complaints, onUpvote, 
                 <div 
                   key={comp.id}
                   onClick={() => panToComplaint(comp)}
-                  className={`p-3.5 text-left hover:bg-gray-50 transition-colors cursor-pointer flex items-start space-x-3.5 ${
-                    selectedComplaint?.id === comp.id ? "bg-gray-50/85 border-l-8 border-gray-800 pl-2" : ""
+                  className={`p-3.5 text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer flex items-start space-x-3.5 ${
+                    selectedComplaint?.id === comp.id ? "bg-gray-50/85 dark:bg-gray-800 border-l-8 border-gray-800 dark:border-gray-600 pl-2" : ""
                   }`}
                 >
                   {/* Category circular icon indicator */}
@@ -357,21 +357,21 @@ export default function CivicDashboard({ currentLanguage, complaints, onUpvote, 
                   </span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <span className="font-black text-bento-text capitalize text-xs truncate">
+                      <span className="font-black text-bento-text dark:text-white capitalize text-xs truncate">
                         {t[comp.category as keyof typeof t] || comp.category} {currentLanguage === "hi" ? "की रिपोर्ट" : "Report"}
                       </span>
                       <span className="text-[10px] text-gray-400 font-mono font-bold">
                         {new Date(comp.createdAt).toLocaleDateString([], { month: "short", day: "numeric" })}
                       </span>
                     </div>
-                    <p className="text-xs font-medium text-gray-500 truncate mt-0.5">{comp.description}</p>
+                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate mt-0.5">{comp.description}</p>
                     <div className="flex items-center space-x-2 mt-2">
                       <span className={`text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded border ${
                         comp.status === "resolved" 
-                          ? "bg-bento-green/20 text-emerald-800 border-bento-green/40" 
+                          ? "bg-bento-green/20 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-400 border-bento-green/40 dark:border-emerald-800" 
                           : comp.status === "in_progress" 
-                            ? "bg-bento-blue/20 text-bento-blue border-bento-blue/40" 
-                            : "bg-bento-orange/20 text-bento-orange border-bento-orange/40"
+                            ? "bg-bento-blue/20 dark:bg-blue-900/40 text-bento-blue dark:text-blue-400 border-bento-blue/40 dark:border-blue-800" 
+                            : "bg-bento-orange/20 dark:bg-orange-900/40 text-bento-orange dark:text-orange-400 border-bento-orange/40 dark:border-orange-800"
                       }`}>
                         {comp.status === "open" 
                           ? (currentLanguage === "hi" ? "लंबित" : "Open") 

@@ -280,10 +280,10 @@ export default function CivicChat({
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-160px)] sm:h-[calc(100vh-150px)] md:h-[calc(100vh-140px)] bg-white rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-gray-800 overflow-hidden shadow-bento" id="civic-chat-module">
+    <div className="flex flex-col h-[calc(100vh-160px)] sm:h-[calc(100vh-150px)] md:h-[calc(100vh-140px)] bg-white dark:bg-gray-900 rounded-2xl sm:rounded-3xl border-3 sm:border-4 border-gray-800 dark:border-gray-700 overflow-hidden shadow-bento transition-colors duration-200" id="civic-chat-module">
       
       {/* Chats area */}
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-5 bg-white">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 space-y-4 sm:space-y-5 bg-white dark:bg-gray-900 transition-colors duration-200">
         {messages.map((msg, idx) => (
           <motion.div
             key={msg.id}
@@ -292,10 +292,10 @@ export default function CivicChat({
             transition={{ duration: 0.25 }}
             className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
           >
-            <div className={`max-w-[90%] sm:max-w-[85%] rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-bento-sm border-2 border-gray-800 relative group ${
+            <div className={`max-w-[90%] sm:max-w-[85%] rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-bento-sm border-2 border-gray-800 dark:border-gray-700 relative group ${
               msg.sender === "user" 
                 ? "bg-bento-blue text-white rounded-tr-none" 
-                : "bg-gray-50 text-bento-text rounded-tl-none"
+                : "bg-gray-50 dark:bg-gray-800 text-bento-text dark:text-gray-100 rounded-tl-none"
             }`}>
               
               {/* Agent Routing Tag Indicator */}
@@ -318,14 +318,14 @@ export default function CivicChat({
                 )}
               </div>
               
-              <div className={`flex items-center justify-between mt-2.5 pt-1.5 border-t text-[11px] font-bold ${
-                msg.sender === "user" ? "border-white/10 text-white/80" : "border-gray-200 text-gray-500"
+              <div className={`absolute -bottom-5 right-0 text-[10px] font-bold ${
+                msg.sender === "user" ? "text-gray-400 dark:text-gray-500" : "text-gray-400 dark:text-gray-500 left-0 right-auto"
               }`}>
                 <span className="font-mono">{msg.timestamp}</span>
                 {msg.sender === "bot" && (
                   <button 
                     onClick={() => speakText(msg.text, currentLanguage)}
-                    className={`px-2 py-1 rounded border border-gray-300 bg-white hover:bg-gray-100 text-bento-text transition-colors flex items-center space-x-1 cursor-pointer ${
+                    className={`absolute -bottom-7 right-0 text-[9px] font-black bg-white dark:bg-gray-800 border-2 border-gray-800 dark:border-gray-600 rounded-lg px-2 py-1 flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity text-bento-text dark:text-gray-100 ${
                       currentlyPlayingId === msg.text ? "bg-bento-orange text-white border-gray-800 animate-pulse" : ""
                     }`}
                     title={t.readAloud}
@@ -341,7 +341,7 @@ export default function CivicChat({
 
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-gray-50 border-2 border-gray-800 rounded-2xl rounded-tl-none p-4 max-w-[80%] shadow-bento-sm">
+            <div className="bg-gray-50 dark:bg-gray-800 border-2 border-gray-800 dark:border-gray-700 rounded-2xl rounded-tl-none p-4 max-w-[80%] shadow-bento-sm">
               <div className="flex space-x-1.5 items-center py-1">
                 <div className="w-2.5 h-2.5 bg-bento-orange rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
                 <div className="w-2.5 h-2.5 bg-bento-blue rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
@@ -356,10 +356,10 @@ export default function CivicChat({
  
       {/* Suggestion Cards/Quick Actions */}
       {messages.length === 1 && (
-        <div className="p-3 sm:p-4 bg-gray-50 border-t-4 border-gray-800 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
+        <div className="p-3 sm:p-4 bg-gray-50 dark:bg-gray-800 border-t-4 border-gray-800 dark:border-gray-700 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3 transition-colors duration-200">
           <button 
             onClick={() => handleQuickAction("Am I eligible for PM-KISAN scheme? what are the benefits?")}
-            className="p-5 text-left bg-bento-green text-white border-4 border-gray-800 rounded-2xl hover:translate-y-[-2px] transition-transform shadow-bento-sm flex flex-col justify-between group cursor-pointer"
+            className="p-5 text-left bg-bento-blue text-white border-4 border-gray-800 dark:border-gray-900 rounded-2xl hover:translate-y-[-2px] transition-transform shadow-bento-sm flex flex-col justify-between group cursor-pointer"
           >
             <div>
               <div className="flex items-center space-x-2 bg-black/20 px-2 py-1 rounded inline-flex font-black text-[10px] uppercase tracking-widest mb-3">
@@ -377,7 +377,7 @@ export default function CivicChat({
 
           <button 
             onClick={() => handleQuickAction("What documents do I need to apply for a fresh Passport?")}
-            className="p-5 text-left bg-bento-blue text-white border-4 border-gray-800 rounded-2xl hover:translate-y-[-2px] transition-transform shadow-bento-sm flex flex-col justify-between group cursor-pointer"
+            className="p-5 text-left bg-bento-green text-white border-4 border-gray-800 dark:border-gray-900 rounded-2xl hover:translate-y-[-2px] transition-transform shadow-bento-sm flex flex-col justify-between group cursor-pointer"
           >
             <div>
               <div className="flex items-center space-x-2 bg-black/20 px-2 py-1 rounded inline-flex font-black text-[10px] uppercase tracking-widest mb-3">
@@ -416,16 +416,14 @@ export default function CivicChat({
       )}
 
       {/* Chat Input Controls */}
-      <div className="p-3 sm:p-4 bg-white border-t-4 border-gray-800">
+      <div className="p-3 sm:p-4 bg-white dark:bg-gray-900 border-t-4 border-gray-800 dark:border-gray-700 transition-colors duration-200">
         <div className="flex items-center space-x-2">
           
           {/* Microphone button scaled to 48px touch target */}
           <button
             onClick={toggleListening}
-            className={`h-12 w-12 flex items-center justify-center rounded-xl border-2 border-gray-800 transition-all cursor-pointer shadow-bento-sm ${
-              isListening 
-                ? "bg-[#FF4444] hover:bg-rose-600 text-white animate-pulse" 
-                : "bg-gray-100 hover:bg-gray-200 text-bento-text"
+            className={`h-11 w-11 sm:h-12 sm:w-12 shrink-0 rounded-xl flex items-center justify-center border-2 border-gray-800 dark:border-gray-600 shadow-bento-sm active:translate-y-0.5 active:shadow-none transition-all cursor-pointer ${
+              isListening ? "bg-red-500 text-white animate-pulse" : "bg-gray-100 dark:bg-gray-800 text-bento-text dark:text-gray-100"
             }`}
             title={isListening ? "Stop Listening" : t.speakToAi}
             id="chat-microphone-btn"
@@ -439,13 +437,13 @@ export default function CivicChat({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
             placeholder={isListening ? t.listeningPlaceholder : t.typePlaceholder}
-            className="flex-1 h-11 sm:h-12 px-3 sm:px-4 bg-gray-50 border-2 border-gray-800 rounded-xl focus:outline-none focus:bg-white text-sm font-semibold text-bento-text"
+            className="flex-1 h-11 sm:h-12 px-3 sm:px-4 bg-gray-50 dark:bg-gray-800 border-2 border-gray-800 dark:border-gray-600 rounded-xl focus:outline-none focus:bg-white dark:focus:bg-gray-700 text-sm font-semibold text-bento-text dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition-colors"
             disabled={isListening}
           />
 
           <button
             onClick={() => handleSendMessage()}
-            className="h-11 sm:h-12 px-3 sm:px-5 bg-bento-orange hover:bg-orange-600 text-white rounded-xl font-black border-2 border-gray-800 shadow-bento-sm active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center space-x-1.5 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
+            className="h-11 sm:h-12 px-3 sm:px-5 bg-bento-orange hover:bg-orange-600 text-white rounded-xl font-black border-2 border-gray-800 dark:border-gray-700 shadow-bento-sm active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center space-x-1.5 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
             disabled={!input.trim()}
           >
             <span className="text-xs uppercase tracking-wider hidden sm:inline">{t.send}</span>

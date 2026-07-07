@@ -200,10 +200,10 @@ export default function ComplaintFiler({ currentLanguage, onComplaintSubmitted }
   ];
 
   return (
-    <div className="max-w-xl mx-auto bg-white border-3 sm:border-4 border-gray-800 rounded-2xl sm:rounded-3xl overflow-hidden shadow-bento p-4 sm:p-5 md:p-7" id="complaint-filer-module">
+    <div className="max-w-xl mx-auto bg-white dark:bg-gray-900 border-3 sm:border-4 border-gray-800 dark:border-gray-700 rounded-2xl sm:rounded-3xl overflow-hidden shadow-bento p-4 sm:p-5 md:p-7 transition-colors duration-200" id="complaint-filer-module">
       
       <div className="text-center mb-6">
-        <h2 className="text-xl sm:text-2xl font-black text-bento-text uppercase tracking-tight flex items-center justify-center space-x-1.5">
+        <h2 className="text-xl sm:text-2xl font-black text-bento-text dark:text-white uppercase tracking-tight flex items-center justify-center space-x-1.5">
           <span>{t.filerTitle}</span>
         </h2>
         <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mt-1.5">
@@ -354,7 +354,7 @@ export default function ComplaintFiler({ currentLanguage, onComplaintSubmitted }
               onDragOver={handleDragOver}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className="border-3 sm:border-4 border-dashed border-gray-300 hover:border-gray-500 rounded-xl sm:rounded-2xl p-6 sm:p-10 text-center cursor-pointer transition-all bg-gray-50 hover:bg-gray-100 active:bg-gray-200"
+              className="border-3 sm:border-4 border-dashed border-gray-300 dark:border-gray-600 hover:border-gray-500 rounded-xl sm:rounded-2xl p-6 sm:p-10 text-center cursor-pointer transition-all bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 dark:active:bg-gray-600"
               id="file-dropzone-container"
             >
               <input 
@@ -376,7 +376,7 @@ export default function ComplaintFiler({ currentLanguage, onComplaintSubmitted }
               </div>
             </div>
           ) : (
-            <div className="relative rounded-xl sm:rounded-2xl overflow-hidden border-3 sm:border-4 border-gray-800 bg-slate-950 flex items-center justify-center max-h-48 sm:max-h-56 shadow-bento-sm">
+            <div className="relative rounded-xl sm:rounded-2xl overflow-hidden border-3 sm:border-4 border-gray-800 dark:border-gray-700 bg-slate-950 flex items-center justify-center max-h-48 sm:max-h-56 shadow-bento-sm">
               <img 
                 src={photo} 
                 alt="Complaint Upload" 
@@ -413,8 +413,8 @@ export default function ComplaintFiler({ currentLanguage, onComplaintSubmitted }
                       onClick={() => setManualCategory(opt.value)}
                       className={`p-2.5 sm:p-3.5 text-left border-2 rounded-xl flex items-center space-x-2 sm:space-x-2.5 text-[10px] sm:text-xs font-black uppercase tracking-wide transition-all shadow-bento-sm ${
                         manualCategory === opt.value
-                          ? "border-gray-800 bg-bento-orange text-white"
-                          : "border-gray-800 text-bento-text hover:bg-gray-100 bg-white"
+                          ? "border-gray-800 dark:border-gray-700 bg-bento-orange text-white"
+                          : "border-gray-800 dark:border-gray-600 text-bento-text dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 bg-white dark:bg-gray-900"
                       }`}
                     >
                       <span className="text-lg">{opt.icon}</span>
@@ -450,24 +450,24 @@ export default function ComplaintFiler({ currentLanguage, onComplaintSubmitted }
               {/* Manual Description */}
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-black uppercase text-gray-400 tracking-wider">
+                  <label className="text-xs font-black uppercase text-gray-400 dark:text-gray-500 tracking-wider">
                     {t.addShortDescription}
                   </label>
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-gray-100 px-2 py-0.5 border border-gray-200 rounded font-mono">{t.aiAutoGenerate}</span>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider bg-gray-100 dark:bg-gray-800 px-2 py-0.5 border border-gray-200 dark:border-gray-700 rounded font-mono">{t.aiAutoGenerate}</span>
                 </div>
                 <textarea
                   value={manualDescription}
                   onChange={(e) => setManualDescription(e.target.value)}
                   placeholder={currentLanguage === "hi" ? "उदा. सेक्टर 4 कोने पर मुख्य सड़क पर टूटी हुई सीवर पाइप। गंदा पानी बह रहा है..." : "e.g. Broken sewer pipe on Main Road, Sector 4 corner. Spewing dirty water..."}
                   rows={2}
-                  className="w-full text-xs p-3.5 border-2 border-gray-800 rounded-xl bg-gray-50 focus:outline-none focus:bg-white focus:border-bento-orange font-semibold text-bento-text"
+                  className="w-full h-11 border-2 border-gray-800 dark:border-gray-700 rounded-xl px-4 text-sm font-semibold bg-gray-50 dark:bg-gray-800 text-bento-text dark:text-white focus:outline-none focus:bg-white dark:focus:bg-gray-700 transition-colors placeholder-gray-400 dark:placeholder-gray-500"
                 />
               </div>
 
               {/* Submit Buttons */}
               <button
                 type="submit"
-                className="w-full h-11 sm:h-12 bg-bento-orange hover:bg-orange-600 text-white rounded-xl text-sm font-black border-2 border-gray-800 shadow-bento active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center space-x-1.5 cursor-pointer"
+                className="w-full h-11 sm:h-12 bg-bento-orange hover:bg-orange-600 text-white rounded-xl text-sm font-black border-2 border-gray-800 dark:border-gray-700 shadow-bento active:translate-y-0.5 active:shadow-none transition-all flex items-center justify-center space-x-1.5 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="uppercase tracking-wider">{t.submitComplaint}</span>
                 <ArrowRight className="h-4 w-4" />

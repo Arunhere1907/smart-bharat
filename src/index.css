@@ -2,13 +2,27 @@
 @import "leaflet/dist/leaflet.css";
 
 @theme {
-  --color-bento-bg: #F4F1EA;
-  --color-bento-text: #1A1A1A;
+  --color-bento-bg: var(--bg-bento-bg);
+  --color-bento-text: var(--bg-bento-text);
   --color-bento-orange: #FF9933;
   --color-bento-blue: #000080;
   --color-bento-green: #138808;
   --shadow-bento: 8px 8px 0px 0px rgba(0, 0, 0, 0.15);
   --shadow-bento-sm: 4px 4px 0px 0px rgba(0, 0, 0, 0.15);
+}
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --bg-bento-bg: #F4F1EA;
+  --bg-bento-text: #1A1A1A;
+}
+
+.dark {
+  --bg-bento-bg: #0B0E14;
+  --bg-bento-text: #F8FAFC;
+  --shadow-bento: 8px 8px 0px 0px rgba(0, 0, 0, 0.5);
+  --shadow-bento-sm: 4px 4px 0px 0px rgba(0, 0, 0, 0.5);
 }
 
 html {
@@ -40,6 +54,14 @@ body {
 .custom-leaflet-marker {
   background: transparent !important;
   border: none !important;
+}
+
+/* Dark mode Leaflet tiles */
+.dark .leaflet-layer,
+.dark .leaflet-control-zoom-in,
+.dark .leaflet-control-zoom-out,
+.dark .leaflet-control-attribution {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
 }
 
 /* Gradient fade for horizontal scroll indicators */
