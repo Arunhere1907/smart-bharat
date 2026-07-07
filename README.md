@@ -153,17 +153,6 @@ Distributed under the Apache-2.0 License.
 
 ## 🎯 Quality Metrics & Improvements
 
-### Overall Score: **87/100** (Improved from 56)
-
-| Dimension | Score | Status |
-|-----------|-------|--------|
-| **Testing** | 100/100 | ✅ 40 comprehensive tests |
-| **Security** | 85/100 | ✅ Input validation, rate limiting, CSP |
-| **Efficiency** | 78/100 | ✅ Image compression, memoization |
-| **Accessibility** | 88/100 | ✅ WCAG 2.1 AA compliant |
-| **Code Quality** | 84/100 | ✅ TypeScript, clean architecture |
-| **Problem Alignment** | 85/100 | ✅ Solves civic engagement needs |
-
 ### Testing (100/100)
 - **40 tests** covering complaint logic, API routes, and components
 - Frameworks: Vitest + React Testing Library
