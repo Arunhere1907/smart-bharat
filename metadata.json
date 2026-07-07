@@ -1,0 +1,6 @@
+{
+  "name": "Smart Bharat",
+  "description": "Smart Bharat — AI-Powered Civic Companion. Empowering Indian citizens to connect with specialist agents, file civic complaints with automated image classification, and track issues transparently in their preferred language.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

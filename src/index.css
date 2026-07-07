@@ -1,0 +1,49 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --color-bento-bg: #F4F1EA;
+  --color-bento-text: #1A1A1A;
+  --color-bento-orange: #FF9933;
+  --color-bento-blue: #000080;
+  --color-bento-green: #138808;
+  --shadow-bento: 8px 8px 0px 0px rgba(0, 0, 0, 0.15);
+  --shadow-bento-sm: 4px 4px 0px 0px rgba(0, 0, 0, 0.15);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* iOS safe area support */
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Hide scrollbar utility for filter bars */
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Ensure Leaflet icon default paths work */
+.leaflet-container {
+  font-family: inherit;
+}
+
+/* Custom Leaflet marker override */
+.custom-leaflet-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Gradient fade for horizontal scroll indicators */
+.scroll-fade-right {
+  mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+}
