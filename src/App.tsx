@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Landmark, Globe, Activity, MessageSquare, PlusCircle, Moon, Sun } from "lucide-react";
 import CivicChat from "./components/CivicChat";
 import ComplaintFiler from "./components/ComplaintFiler";
@@ -31,7 +31,7 @@ export default function App() {
   }, [isDarkMode]);
 
   // Fetch all complaints from server
-  const fetchComplaints = async () => {
+  const fetchComplaints = useCallback(async () => {
     try {
       const response = await fetch("/api/complaints");
       if (response.ok) {
@@ -41,13 +41,13 @@ export default function App() {
     } catch (err) {
       console.error("Error fetching complaints:", err);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchComplaints();
-  }, []);
+  }, [fetchComplaints]);
 
-  const handleUpvote = async (id: string) => {
+  const handleUpvote = useCallback(async (id: string) => {
     try {
       const response = await fetch(`/api/complaints/${id}/upvote`, {
         method: "POST"
@@ -62,9 +62,9 @@ export default function App() {
     } catch (err) {
       console.error("Error upvoting complaint:", err);
     }
-  };
+  }, []);
 
-  const handleStatusChange = async (id: string, newStatus: any) => {
+  const handleStatusChange = useCallback(async (id: string, newStatus: any) => {
     try {
       const response = await fetch(`/api/complaints/${id}/status`, {
         method: "POST",
@@ -80,11 +80,11 @@ export default function App() {
     } catch (err) {
       console.error("Error updating complaint status:", err);
     }
-  };
+  }, []);
 
-  const handleAutoFileRequest = (category: any) => {
+  const handleAutoFileRequest = useCallback((category: any) => {
     setTab("file");
-  };
+  }, []);
 
   const languageOptions = [
     { code: "en", name: "English" },
@@ -121,13 +121,28 @@ export default function App() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-2 mr-auto ml-6">
-          <button onClick={() => setTab("chat")} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab === "chat" ? "bg-gray-100 dark:bg-gray-800 text-bento-blue border-2 border-gray-800 dark:border-gray-600" : "text-gray-500 dark:text-gray-400 hover:text-bento-text"}`}>
+          <button 
+            onClick={() => setTab("chat")} 
+            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab === "chat" ? "bg-gray-100 dark:bg-gray-800 text-bento-blue border-2 border-gray-800 dark:border-gray-600" : "text-gray-500 dark:text-gray-400 hover:text-bento-text"}`}
+            aria-current={tab === "chat" ? "page" : undefined}
+            aria-label="Navigate to Chat tab"
+          >
             {t.navChat}
           </button>
-          <button onClick={() => setTab("file")} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab === "file" ? "bg-gray-100 dark:bg-gray-800 text-bento-orange border-2 border-gray-800 dark:border-gray-600" : "text-gray-500 dark:text-gray-400 hover:text-bento-text"}`}>
+          <button 
+            onClick={() => setTab("file")} 
+            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab === "file" ? "bg-gray-100 dark:bg-gray-800 text-bento-orange border-2 border-gray-800 dark:border-gray-600" : "text-gray-500 dark:text-gray-400 hover:text-bento-text"}`}
+            aria-current={tab === "file" ? "page" : undefined}
+            aria-label="Navigate to File Complaint tab"
+          >
             {t.navReport}
           </button>
-          <button onClick={() => setTab("dashboard")} className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab === "dashboard" ? "bg-gray-100 dark:bg-gray-800 text-bento-green border-2 border-gray-800 dark:border-gray-600" : "text-gray-500 dark:text-gray-400 hover:text-bento-text"}`}>
+          <button 
+            onClick={() => setTab("dashboard")} 
+            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${tab === "dashboard" ? "bg-gray-100 dark:bg-gray-800 text-bento-green border-2 border-gray-800 dark:border-gray-600" : "text-gray-500 dark:text-gray-400 hover:text-bento-text"}`}
+            aria-current={tab === "dashboard" ? "page" : undefined}
+            aria-label="Navigate to Dashboard tab"
+          >
             {t.navDashboard}
           </button>
         </div>
@@ -137,18 +152,24 @@ export default function App() {
           <button 
             onClick={() => setIsDarkMode(!isDarkMode)}
             className="flex items-center justify-center h-8 w-8 sm:h-9 sm:w-9 bg-white dark:bg-gray-800 border-2 border-gray-800 dark:border-gray-600 rounded-xl shadow-bento-sm hover:translate-y-[-1px] transition-transform text-bento-text"
+            aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+            title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
           >
             {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
 
           {/* Language selector dropdown */}
           <div className="flex items-center space-x-1.5 sm:space-x-2 bg-white dark:bg-gray-800 border-2 border-gray-800 dark:border-gray-600 rounded-xl px-2 sm:px-2.5 py-1.5 shadow-bento-sm hover:translate-y-[-1px] transition-transform">
-            <Globe className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-bento-blue dark:text-blue-400" />
+            <Globe className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-bento-blue dark:text-blue-400" aria-hidden="true" />
+            <label htmlFor="global-language-selector" className="sr-only">
+              Select Language
+            </label>
             <select
               value={currentLanguage}
               onChange={(e) => setCurrentLanguage(e.target.value)}
               className="bg-transparent text-[11px] sm:text-xs font-bold text-bento-text outline-none cursor-pointer max-w-[80px] sm:max-w-none"
               id="global-language-selector"
+              aria-label="Select language for interface"
             >
               {languageOptions.map((lang) => (
                 <option key={lang.code} value={lang.code} className="text-slate-800 dark:text-slate-200 bg-white dark:bg-gray-800 font-bold">
@@ -161,37 +182,47 @@ export default function App() {
       </header>
 
       {/* 2. Main Body Workspace */}
-      <main className="flex-1 max-w-[1400px] w-full mx-auto px-3 sm:px-4 py-3 md:py-8">
+      <main className="flex-1 max-w-[1400px] w-full mx-auto px-3 sm:px-4 py-3 md:py-8" role="main" aria-live="polite">
         <div className="relative">
           {tab === "chat" && (
-            <CivicChat 
-              currentLanguage={currentLanguage} 
-              setTab={setTab}
-              setQuickSearch={setQuickSearchQuery}
-              onAutoFileRequest={handleAutoFileRequest}
-            />
+            <section aria-label="Chat with AI Assistant">
+              <CivicChat 
+                currentLanguage={currentLanguage} 
+                setTab={setTab}
+                setQuickSearch={setQuickSearchQuery}
+                onAutoFileRequest={handleAutoFileRequest}
+              />
+            </section>
           )}
           
           {tab === "file" && (
-            <ComplaintFiler 
-              currentLanguage={currentLanguage}
-              onComplaintSubmitted={fetchComplaints} 
-            />
+            <section aria-label="File a Complaint">
+              <ComplaintFiler 
+                currentLanguage={currentLanguage}
+                onComplaintSubmitted={fetchComplaints} 
+              />
+            </section>
           )}
 
           {tab === "dashboard" && (
-            <CivicDashboard 
-              currentLanguage={currentLanguage}
-              complaints={complaints}
-              onUpvote={handleUpvote}
-              onStatusChange={handleStatusChange}
-            />
+            <section aria-label="Complaints Dashboard">
+              <CivicDashboard 
+                currentLanguage={currentLanguage}
+                complaints={complaints}
+                onUpvote={handleUpvote}
+                onStatusChange={handleStatusChange}
+              />
+            </section>
           )}
         </div>
       </main>
 
       {/* 3. Bottom Navigation Bar for Mobile-first responsive feel */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t-4 border-gray-800 dark:border-gray-700 px-2 py-1.5 flex items-center justify-around md:hidden transition-colors duration-200" style={{ paddingBottom: 'max(0.375rem, env(safe-area-inset-bottom))' }}>
+      <nav 
+        className="fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-gray-900 border-t-4 border-gray-800 dark:border-gray-700 px-2 py-1.5 flex items-center justify-around md:hidden transition-colors duration-200" 
+        style={{ paddingBottom: 'max(0.375rem, env(safe-area-inset-bottom))' }}
+        aria-label="Main navigation"
+      >
         
         <button
           onClick={() => setTab("chat")}
@@ -201,6 +232,8 @@ export default function App() {
               : "text-gray-400 dark:text-gray-500 hover:text-bento-text"
           }`}
           id="nav-chat-tab"
+          aria-current={tab === "chat" ? "page" : undefined}
+          aria-label="Navigate to Chat"
         >
           <MessageSquare className="h-5 w-5 mb-1" />
           <span className="text-[10px] tracking-tight">{t.navChat}</span>
@@ -214,6 +247,8 @@ export default function App() {
               : "text-gray-400 dark:text-gray-500 hover:text-bento-text"
           }`}
           id="nav-file-tab"
+          aria-current={tab === "file" ? "page" : undefined}
+          aria-label="Navigate to File Complaint"
         >
           <PlusCircle className="h-5 w-5 mb-1 text-bento-orange" />
           <span className="text-[10px] tracking-tight text-bento-orange">{t.navReport}</span>
@@ -227,6 +262,8 @@ export default function App() {
               : "text-gray-400 dark:text-gray-500 hover:text-bento-text"
           }`}
           id="nav-dashboard-tab"
+          aria-current={tab === "dashboard" ? "page" : undefined}
+          aria-label="Navigate to Dashboard"
         >
           <Activity className="h-5 w-5 mb-1 text-bento-green" />
           <span className="text-[10px] tracking-tight">{t.navDashboard}</span>

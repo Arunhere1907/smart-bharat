@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion } from "motion/react";
 import { 
   Upload, Camera, MapPin, AlertTriangle, CheckCircle2, 
@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Complaint, ComplaintCategory, ComplaintSeverity } from "../types";
 import { translations } from "../translations";
+import { compressImage, formatBytes, getBase64Size } from "../utils/imageCompression";
 
 interface ComplaintFilerProps {
   currentLanguage: string;
@@ -73,43 +74,69 @@ export default function ComplaintFiler({ currentLanguage, onComplaintSubmitted }
     );
   };
 
-  // Convert File to Base64 String
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Convert File to Base64 String with compression
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      setPhoto(reader.result as string);
-      setIsFormVisible(true); // make classification options visible
-    };
-    reader.readAsDataURL(file);
+    try {
+      // Compress image before converting to base64
+      const compressed = await compressImage(file, {
+        maxWidth: 1200,
+        maxHeight: 1200,
+        quality: 0.8,
+      });
+
+      setPhoto(compressed);
+      setIsFormVisible(true);
+    } catch (error) {
+      console.error('Image compression failed:', error);
+      // Fallback to uncompressed if compression fails
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPhoto(reader.result as string);
+        setIsFormVisible(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (!file) return;
+
+    try {
+      const compressed = await compressImage(file, {
+        maxWidth: 1200,
+        maxHeight: 1200,
+        quality: 0.8,
+      });
+
+      setPhoto(compressed);
+      setIsFormVisible(true);
+    } catch (error) {
+      console.error('Image compression failed:', error);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPhoto(reader.result as string);
+        setIsFormVisible(true);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    const file = e.dataTransfer.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      setPhoto(reader.result as string);
-      setIsFormVisible(true);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const clearPhoto = () => {
+  const clearPhoto = useCallback(() => {
     setPhoto(null);
     setSubmitResult(null);
     setLoadingState(null);
     setManualDescription("");
     setIsFormVisible(false);
-  };
+  }, []);
 
   const handleFilingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -185,19 +212,20 @@ export default function ComplaintFiler({ currentLanguage, onComplaintSubmitted }
 
   const t = translations[currentLanguage] || translations.en;
 
-  const categoryOptions: { value: ComplaintCategory; label: string; icon: string }[] = [
+  // Memoize category and severity options to prevent recreation on every render
+  const categoryOptions: { value: ComplaintCategory; label: string; icon: string }[] = useMemo(() => [
     { value: "pothole", label: t.pothole || "Pothole / Road Damage", icon: "🛣️" },
     { value: "garbage", label: t.garbage || "Garbage Pile / Dump", icon: "🗑️" },
     { value: "streetlight", label: t.streetlight || "Broken Streetlight", icon: "💡" },
     { value: "water_leak", label: t.water_leak || "Water Leakage / Pipe", icon: "💧" },
     { value: "other", label: t.other || "Other Civic Problem", icon: "⚠️" },
-  ];
+  ], [t]);
 
-  const severityOptions: { value: ComplaintSeverity; label: string; color: string }[] = [
+  const severityOptions: { value: ComplaintSeverity; label: string; color: string }[] = useMemo(() => [
     { value: "low", label: t.low || "Low (Presents no danger)", color: "border-2 border-gray-800 text-bento-green bg-emerald-50 hover:bg-emerald-100" },
     { value: "medium", label: t.medium || "Medium (Blocks access, delay)", color: "border-2 border-gray-800 text-amber-700 bg-amber-50 hover:bg-amber-100" },
     { value: "high", label: t.high || "High (Extreme danger)", color: "border-2 border-gray-800 text-rose-700 bg-rose-50 hover:bg-rose-100" },
-  ];
+  ], [t]);
 
   return (
     <div className="max-w-xl mx-auto bg-white dark:bg-gray-900 border-3 sm:border-4 border-gray-800 dark:border-gray-700 rounded-2xl sm:rounded-3xl overflow-hidden shadow-bento p-4 sm:p-5 md:p-7 transition-colors duration-200" id="complaint-filer-module">

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import L from "leaflet";
 import { 
   BarChart3, MapPin, ThumbsUp, CheckCircle, 
@@ -27,10 +27,13 @@ export default function CivicDashboard({ currentLanguage, complaints, onUpvote, 
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersGroupRef = useRef<L.FeatureGroup | null>(null);
 
-  const filteredComplaints = complaints.filter(c => {
-    if (filterCategory === "all") return true;
-    return c.category === filterCategory;
-  });
+  // Memoize filtered complaints to prevent unnecessary recalculations
+  const filteredComplaints = useMemo(() => {
+    return complaints.filter(c => {
+      if (filterCategory === "all") return true;
+      return c.category === filterCategory;
+    });
+  }, [complaints, filterCategory]);
 
   const t = translations[currentLanguage] || translations.en;
 
@@ -150,7 +153,7 @@ export default function CivicDashboard({ currentLanguage, complaints, onUpvote, 
     };
   }, []);
 
-  const panToComplaint = (comp: Complaint) => {
+  const panToComplaint = useCallback((comp: Complaint) => {
     setSelectedComplaint(comp);
     if (mapInstanceRef.current) {
       mapInstanceRef.current.setView([comp.latitude, comp.longitude], 14, {
@@ -158,7 +161,7 @@ export default function CivicDashboard({ currentLanguage, complaints, onUpvote, 
         duration: 1
       });
     }
-  };
+  }, []);
 
   const categoriesList: { value: string; label: string; emoji: string }[] = [
     { value: "all", label: currentLanguage === "hi" ? "सभी समस्याएं" : "All Problems", emoji: "📋" },

@@ -7,6 +7,15 @@ import {
   addComplaint,
   getHaversineDistance,
 } from "./_shared/store";
+import {
+  validatePhoto,
+  validateCoordinates,
+  validateCategory,
+  validateSeverity,
+  validateDescription,
+  sanitizeText,
+} from "./_shared/validation";
+import { rateLimit, RateLimits } from "./_shared/ratelimit";
 
 let aiClient: GoogleGenAI | null = null;
 function getGeminiClient(): GoogleGenAI {
@@ -25,23 +34,63 @@ function getGeminiClient(): GoogleGenAI {
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method === "GET") {
+    // Rate limit: 100 requests per minute for reads
+    const rateLimitResult = rateLimit(req, RateLimits.READ);
+    if (rateLimitResult) {
+      return res.status(rateLimitResult.statusCode).json(rateLimitResult.body);
+    }
+    
     return res.status(200).json(getComplaints());
   }
 
   if (req.method === "POST") {
+    // Rate limit: 5 complaints per 10 minutes
+    const rateLimitResult = rateLimit(req, RateLimits.COMPLAINT_SUBMIT);
+    if (rateLimitResult) {
+      return res.status(rateLimitResult.statusCode).json(rateLimitResult.body);
+    }
+
     try {
       const { photo, latitude, longitude, manualCategory, manualDescription, manualSeverity } = req.body;
 
-      if (!photo) {
-        return res.status(400).json({ error: "Photo is required to file a complaint" });
+      // Validate photo
+      const photoValidation = validatePhoto(photo);
+      if (!photoValidation.valid) {
+        return res.status(400).json({ error: photoValidation.error });
       }
 
+      // Parse and validate coordinates
       const lat = latitude ? parseFloat(latitude) : 28.6139;
       const lng = longitude ? parseFloat(longitude) : 77.2090;
 
+      const coordValidation = validateCoordinates(lat, lng);
+      if (!coordValidation.valid) {
+        return res.status(400).json({ error: coordValidation.error });
+      }
+
+      // Validate and sanitize manual inputs
       let category = manualCategory || "other";
       let severity = manualSeverity || "medium";
-      let description = manualDescription || "Reported civic issue.";
+      let description = sanitizeText(manualDescription || "Reported civic issue.", 2000);
+
+      if (manualCategory) {
+        const catValidation = validateCategory(manualCategory);
+        if (!catValidation.valid) {
+          return res.status(400).json({ error: catValidation.error });
+        }
+      }
+
+      if (manualSeverity) {
+        const sevValidation = validateSeverity(manualSeverity);
+        if (!sevValidation.valid) {
+          return res.status(400).json({ error: sevValidation.error });
+        }
+      }
+
+      const descValidation = validateDescription(description);
+      if (!descValidation.valid) {
+        return res.status(400).json({ error: descValidation.error });
+      }
 
       const apiKey = process.env.GEMINI_API_KEY;
 

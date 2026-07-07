@@ -2,6 +2,8 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { GoogleGenAI, Type } from "@google/genai";
 import { GOVERNMENT_SCHEMES, DOCUMENT_CHECKLISTS } from "../src/data";
 import { getComplaints } from "./_shared/store";
+import { validateChatMessage, sanitizeText } from "./_shared/validation";
+import { rateLimit, RateLimits } from "./_shared/ratelimit";
 
 let aiClient: GoogleGenAI | null = null;
 function getGeminiClient(): GoogleGenAI {
@@ -24,12 +26,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  // Rate limit: 20 chat messages per minute
+  const rateLimitResult = rateLimit(req, RateLimits.CHAT);
+  if (rateLimitResult) {
+    return res.status(rateLimitResult.statusCode).json(rateLimitResult.body);
+  }
+
   try {
     const { message, history = [], language = "en" } = req.body;
 
-    if (!message || message.trim() === "") {
-      return res.status(400).json({ error: "Message is required" });
+    // Validate and sanitize message
+    const validation = validateChatMessage(message);
+    if (!validation.valid) {
+      return res.status(400).json({ error: validation.error });
     }
+
+    const sanitizedMessage = sanitizeText(message, 5000);
 
     const apiKey = process.env.GEMINI_API_KEY;
     const complaints = getComplaints();
@@ -43,7 +55,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const ai = getGeminiClient();
 
         const routerPrompt = `You are the Router Agent for Smart Bharat, an AI civic companion for citizens.
-Analyze the citizen's message: "${message}"
+Analyze the citizen's message: "${sanitizedMessage}"
 
 Classify it into one of the following agents:
 1. 'scheme_query': if they are asking about government schemes, financial aid, subsidies, benefits, eligibility.
@@ -117,9 +129,9 @@ Respond STRICTLY with a JSON object.`;
         const ai = getGeminiClient();
         const formattedHistory = history
           .slice(-6)
-          .map((m: any) => `${m.sender === "user" ? "Citizen" : "Agent"}: ${m.text}`)
+          .map((m: any) => `${m.sender === "user" ? "Citizen" : "Agent"}: ${sanitizeText(m.text, 5000)}`)
           .join("\n");
-        const fullPrompt = `${formattedHistory}\n\nCitizen: ${message}`;
+        const fullPrompt = `${formattedHistory}\n\nCitizen: ${sanitizedMessage}`;
 
         const chatPromise = ai.models.generateContent({
           model: "gemini-2.5-flash",
@@ -135,10 +147,10 @@ Respond STRICTLY with a JSON object.`;
         botReplyText = chatResponse.text || "I am here to help you. Could you please rephrase?";
       } catch (err) {
         console.error("Specialist agent call failed or timed out:", err);
-        botReplyText = getMockResponse(routedAgent, message, detectedLanguage, complaints);
+        botReplyText = getMockResponse(routedAgent, sanitizedMessage, detectedLanguage, complaints);
       }
     } else {
-      botReplyText = getMockResponse(routedAgent, message, detectedLanguage, complaints);
+      botReplyText = getMockResponse(routedAgent, sanitizedMessage, detectedLanguage, complaints);
     }
 
     return res.status(200).json({
@@ -158,7 +170,7 @@ Respond STRICTLY with a JSON object.`;
 }
 
 function heuristicRoute(message: string): any {
-  const msgLower = message.toLowerCase();
+  const msgLower = sanitizeText(message).toLowerCase();
   if (msgLower.includes("scheme") || msgLower.includes("kisan") || msgLower.includes("yojana") || msgLower.includes("eligib") || msgLower.includes("benefit") || msgLower.includes("pm-")) return "scheme";
   if (msgLower.includes("document") || msgLower.includes("apply") || msgLower.includes("passport") || msgLower.includes("license") || msgLower.includes("pan") || msgLower.includes("voter") || msgLower.includes("ration") || msgLower.includes("checklist")) return "document";
   if (msgLower.includes("report") || msgLower.includes("file") || msgLower.includes("complaint") || msgLower.includes("pothole") || msgLower.includes("garbage") || msgLower.includes("streetlight") || msgLower.includes("leak")) return "complaint";
